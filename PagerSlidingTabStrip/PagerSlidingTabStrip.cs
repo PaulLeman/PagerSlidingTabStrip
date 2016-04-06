@@ -31,14 +31,14 @@ namespace com.refractored
 
 
         private static int[] Attrs = new int[]
-		{
-			Android.Resource.Attribute.TextColorPrimary,
-			Android.Resource.Attribute.TextSize, 
-			Android.Resource.Attribute.TextColor,
+        {
+            Android.Resource.Attribute.TextColorPrimary,
+            Android.Resource.Attribute.TextSize,
+            Android.Resource.Attribute.TextColor,
             Android.Resource.Attribute.Padding,
-			Android.Resource.Attribute.PaddingLeft,
-			Android.Resource.Attribute.PaddingRight
-		};
+            Android.Resource.Attribute.PaddingLeft,
+            Android.Resource.Attribute.PaddingRight
+        };
 
         //These indexes must be related with the ATTR array above
         private const int TextColorPrimaryIndex = 0;
@@ -675,72 +675,80 @@ namespace com.refractored
 
         protected override void OnDraw(Canvas canvas)
         {
-            base.OnDraw(canvas);
-            if (IsInEditMode || tabCount == 0)
-                return;
-
-            var height = Height;
-
-            float first, second = 0f;
-            GetIndicatorCoordinates(out first, out second);
-
-            if (this.ArrowAsIndicator)
+            try
             {
-                var center = (second + first) / 2 + paddingLeft;
-                Paint paint = new Paint();
+                base.OnDraw(canvas);
+                if (IsInEditMode || tabCount == 0)
+                    return;
 
-                //paint.setColor(android.graphics.Color.BLACK);
-                //canvas.drawPaint(paint);
+                var height = Height;
 
-                paint.StrokeWidth = 1;
-                paint.Color = new Color(indicatorColor);
-                paint.SetStyle(Paint.Style.FillAndStroke);
-                paint.AntiAlias = true;
+                float first, second = 0f;
+                GetIndicatorCoordinates(out first, out second);
 
-                PointF a = new PointF(center, height - indicatorHeight);
-                PointF b = new PointF(center - indicatorHeight / (float)Math.Sqrt(2), height);
-                PointF c = new PointF(center + indicatorHeight / (float)Math.Sqrt(2), height);
-
-                Path path = new Path();
-                path.SetFillType(Path.FillType.EvenOdd);
-                path.MoveTo(a.X, a.Y);
-                path.LineTo(b.X, b.Y);
-                path.LineTo(c.X, c.Y);
-                path.LineTo(a.X, a.Y);
-                path.Close();
-
-                canvas.DrawPath(path, paint);
-            }
-            else
-            {
-                //draw indicator line
-                rectPaint.Color = new Color(indicatorColor);
-                canvas.DrawRect(first + paddingLeft, height - indicatorHeight, second + paddingLeft, height, rectPaint);
-            }
-
-            //draw underline
-            rectPaint.Color = new Color(underlineColor);
-            canvas.DrawRect(paddingLeft, height - underlineHeight, tabsContainer.Width + paddingRight, height, rectPaint);
-
-            //draw divider
-            if (dividerWidth <= 0)
-                return;
-
-            dividerPaint.StrokeWidth = dividerWidth;
-            dividerPaint.Color = new Color(dividerColor);
-
-            var offset = IsPaddingMiddle ? paddingLeft : 0F;
-
-            for (int i = 0; i < tabCount - 1; i++)
-            {
-                var tab = tabsContainer.GetChildAt(i);
-                if (tab != null)
+                if (this.ArrowAsIndicator)
                 {
-                    canvas.DrawLine(offset + tab.Right, dividerPadding, offset + tab.Right, height - dividerPadding, dividerPaint);
+                    var center = (second + first) / 2 + paddingLeft;
+                    Paint paint = new Paint();
 
+                    //paint.setColor(android.graphics.Color.BLACK);
+                    //canvas.drawPaint(paint);
+
+                    paint.StrokeWidth = 1;
+                    paint.Color = new Color(indicatorColor);
+                    paint.SetStyle(Paint.Style.FillAndStroke);
+                    paint.AntiAlias = true;
+
+                    PointF a = new PointF(center, height - indicatorHeight);
+                    PointF b = new PointF(center - indicatorHeight / (float)Math.Sqrt(2), height);
+                    PointF c = new PointF(center + indicatorHeight / (float)Math.Sqrt(2), height);
+
+                    Path path = new Path();
+                    path.SetFillType(Path.FillType.EvenOdd);
+                    path.MoveTo(a.X, a.Y);
+                    path.LineTo(b.X, b.Y);
+                    path.LineTo(c.X, c.Y);
+                    path.LineTo(a.X, a.Y);
+                    path.Close();
+
+                    canvas.DrawPath(path, paint);
+                }
+                else
+                {
+                    //draw indicator line
+                    rectPaint.Color = new Color(indicatorColor);
+                    canvas.DrawRect(first + paddingLeft, height - indicatorHeight, second + paddingLeft, height, rectPaint);
+                }
+
+                //draw underline
+                rectPaint.Color = new Color(underlineColor);
+                canvas.DrawRect(paddingLeft, height - underlineHeight, tabsContainer.Width + paddingRight, height, rectPaint);
+
+                //draw divider
+                if (dividerWidth <= 0)
+                    return;
+
+                dividerPaint.StrokeWidth = dividerWidth;
+                dividerPaint.Color = new Color(dividerColor);
+
+                var offset = IsPaddingMiddle ? paddingLeft : 0F;
+
+                for (int i = 0; i < tabCount - 1; i++)
+                {
+                    var tab = tabsContainer.GetChildAt(i);
+                    if (tab != null)
+                    {
+                        canvas.DrawLine(offset + tab.Right, dividerPadding, offset + tab.Right, height - dividerPadding, dividerPaint);
+
+                    }
                 }
             }
-
+            catch (ArgumentException ae)
+            {
+                if (ae.ParamName == "jobject")
+                    return;
+                throw;
+            }
         }
 
 
